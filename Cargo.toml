@@ -2,7 +2,7 @@
 name = "ssrand"
 description = "Simple PRNGs ala George Marsaglia"
 version = "0.1.4"
-authors = ["Zachary Tomlinson <ztomlinson7@gmail.com>", ]
+authors = ["Zachary Tomlinson <ztomlinson7@gmail.com>", "Craig McQueen <craig@mcqueen.au>"]
 readme = "README.md"
 repository = "https://github.com/zacharytomlinson/ssrand"
 keywords = ["random", "rng"]

@@ -5,7 +5,7 @@ Simple PRNGs.
 ## Intro
 
 This project provides `ssrand`, PRNGs a-la George Marsaglia with additions from 
-colleagues.
+colleagues. Special thanks to Craig McQueen.
 
 Features:
 
@@ -68,6 +68,9 @@ The following pseudo-random number generators are provided:
 | `LFSR88`    | Combined LFSR (Tausworthe) random number generator by L'Ecuyer. From [[lecuyer2]](#lecuyer2).
 
 ## References
+
+<a href="https://github.com/cmcqueen/simplerandom-rs">simplerandom-rs</a>  
+Craig McQueen
 
 <a name="mars1">\[mars1\]</a>  
 [Random Numbers for C: End, at last?](http://www.cse.yorku.ca/~oz/marsaglia-rng.html)  
