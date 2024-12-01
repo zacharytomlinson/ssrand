@@ -53,7 +53,7 @@ pub trait UIntTypes:
 ///
 /// The result is the multiplication of `a` and `b`, modulo `m`.
 ///
-///     use simplerandom::maths::mul_mod;
+///     use ssrand::maths::mul_mod;
 ///     let result = mul_mod(123456789_u32, 3111222333, 0x9068FFFF);
 ///     assert_eq!(1473911797_u32, result);
 ///     let result = mul_mod(12345678901234567890_u64, 10222333444555666777, 0x29A65EACFFFFFFFF);
@@ -310,7 +310,7 @@ where
 /// The result is the same unsigned type as that of parameter `m`.
 /// The result is in the range [0..m] even when `a` is negative.
 ///
-///     use simplerandom::maths::modulo;
+///     use ssrand::maths::modulo;
 ///     let result = modulo(12345_u32, 7_u32);
 ///     assert_eq!(result, 4_u32);
 ///     let result = modulo(-12345_i32, 7_u32);
@@ -357,7 +357,7 @@ where
 /// Calculation of `base` to the power of an unsigned integer `n`, with the
 /// natural modulo of the unsigned integer type T (ie, with wrapping).
 ///
-///     use simplerandom::maths::wrapping_pow;
+///     use ssrand::maths::wrapping_pow;
 ///     let result = wrapping_pow(12345_u32, 1500000_u32);
 ///     assert_eq!(result, 2764689665_u32);
 ///
@@ -388,7 +388,7 @@ where
 /// Calculation of `base` to the power of an unsigned integer `n`,
 /// modulo a value `m`.
 ///
-///     use simplerandom::maths::pow_mod;
+///     use ssrand::maths::pow_mod;
 ///     let result = pow_mod(12345_u32, 1500000_u32, 1211400191_u32);
 ///     assert_eq!(result, 348133782_u32);
 ///     let result = pow_mod(0xDC28D76FFD9338E9D868AF566191DE10_u128,
@@ -437,7 +437,7 @@ where
 /// This implementation is by a loop, not recursion, with time order
 /// `O(log n)` and stack depth `O(1)`.
 ///
-///     use simplerandom::maths::wrapping_geom_series;
+///     use ssrand::maths::wrapping_geom_series;
 ///     let result = wrapping_geom_series(12345_u32, 1500000_u32);
 ///     assert_eq!(result, 57634016_u32);
 ///
