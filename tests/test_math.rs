@@ -1,4 +1,4 @@
-use ::gmar_rng_rs::math;
+use ::ssrand::math;
 
 #[test]
 fn test_mul_mod_generic() {
