@@ -7,30 +7,33 @@
 use core::ops::{BitAnd, Shl, Shr};
 use num_traits::{ConstOne, ConstZero, One, Pow, PrimInt, Unsigned, Zero};
 
-/// Shorthand for traits needed in `BCMatrix`.
-pub trait BitMatrixInt: PrimInt + Unsigned + ConstOne + ConstZero + core::ops::BitXorAssign {}
+/// Shorthand for traits needed in `BitMatrix`.
+pub trait BitMatrixInt:
+    PrimInt + Unsigned + ConstOne + ConstZero + core::ops::BitXorAssign
+{
+}
 impl<T: PrimInt + Unsigned + ConstOne + ConstZero + core::ops::BitXorAssign> BitMatrixInt for T {}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct BCMatrix<T, const WIDTH: usize>
+pub struct BitMatrix<T, const WIDTH: usize>
 where
     T: BitMatrixInt,
 {
     columns: [T; WIDTH],
 }
 
-impl<T, const WIDTH: usize> BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
-    pub fn new(init_data: &[T; WIDTH]) -> BCMatrix<T, WIDTH> {
-        BCMatrix::<T, WIDTH> {
+    pub fn new(init_data: &[T; WIDTH]) -> BitMatrix<T, WIDTH> {
+        BitMatrix::<T, WIDTH> {
             columns: *init_data,
         }
     }
 
-    pub fn shift(shift_value: i8) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH> {
+    pub fn shift(shift_value: i8) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH> {
             columns: [T::ZERO; WIDTH],
         };
         let mut value: T = if shift_value >= 0 {
@@ -66,16 +69,16 @@ where
         result
     }
 
-    pub fn dot(&self, b: &BCMatrix<T, WIDTH>) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH>::zero();
+    pub fn dot(&self, b: &BitMatrix<T, WIDTH>) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH>::zero();
         for i in 0..WIDTH {
             result.columns[i] = self.dot_vec(b.columns[i]);
         }
         result
     }
 
-    pub fn dot_equ(&mut self, b: &BCMatrix<T, WIDTH>) {
-        let a = BCMatrix::<T, WIDTH> {
+    pub fn dot_equ(&mut self, b: &BitMatrix<T, WIDTH>) {
+        let a = BitMatrix::<T, WIDTH> {
             columns: self.columns,
         };
         for i in 0..WIDTH {
@@ -84,13 +87,13 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> Zero for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> Zero for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
     /// Create a zero-matrix.
-    fn zero() -> BCMatrix<T, WIDTH> {
-        BCMatrix::<T, WIDTH> {
+    fn zero() -> BitMatrix<T, WIDTH> {
+        BitMatrix::<T, WIDTH> {
             columns: [T::ZERO; WIDTH],
         }
     }
@@ -105,13 +108,13 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> One for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> One for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
     /// Create a unity-matrix. That is, ones on the diagonal, zeros elsewhere.
-    fn one() -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH> {
+    fn one() -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH> {
             columns: [T::ZERO; WIDTH],
         };
         let mut value: T = T::ONE;
@@ -123,7 +126,7 @@ where
     }
 }
 
-impl<N, T, const WIDTH: usize> Pow<N> for BCMatrix<T, WIDTH>
+impl<N, T, const WIDTH: usize> Pow<N> for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
     N: Unsigned + PrimInt + BitAnd + ConstOne + ConstZero,
@@ -131,9 +134,9 @@ where
     type Output = Self;
 
     /// Raise a matrix to a power. Efficient matrix exponentiation.
-    fn pow(self, n: N) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH>::one();
-        let mut temp_exp = BCMatrix::<T, WIDTH> {
+    fn pow(self, n: N) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH>::one();
+        let mut temp_exp = BitMatrix::<T, WIDTH> {
             columns: self.columns,
         };
         let mut n_work: N = n;
@@ -153,7 +156,7 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> BitAnd<T> for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> BitAnd<T> for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
@@ -162,8 +165,8 @@ where
     /// Bitwise-and matrix with an integer value.
     /// The meaning of this is, this modifies a matrix so that its matrix-multiplication with an
     /// integer represents a bit operation that has been masked with the given integer bit value.
-    fn bitand(self, rhs: T) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH>::zero();
+    fn bitand(self, rhs: T) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH>::zero();
         for i in 0..WIDTH {
             result.columns[i] = self.columns[i] & rhs;
         }
@@ -171,7 +174,7 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> Shl<usize> for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> Shl<usize> for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
@@ -180,9 +183,9 @@ where
     /// Shift a matrix left.
     /// The meaning of this is, this modifies a matrix so that its matrix-multiplication with an
     /// integer represents a bit operation that is shifted left.
-    fn shl(self, n: usize) -> BCMatrix<T, WIDTH> {
+    fn shl(self, n: usize) -> BitMatrix<T, WIDTH> {
         let mask = crate::math::bit_width_mask(WIDTH);
-        let mut result = BCMatrix::<T, WIDTH>::zero();
+        let mut result = BitMatrix::<T, WIDTH>::zero();
         for i in 0..WIDTH {
             result.columns[i] = (self.columns[i] << n) & mask;
         }
@@ -190,7 +193,7 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> Shr<usize> for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> Shr<usize> for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
@@ -198,8 +201,8 @@ where
 
     /// Shift a matrix right. The meaning of this is, this modifies a matrix so that its
     /// matrix-multiplication with an integer represents a bit operation that is shifted right.
-    fn shr(self, n: usize) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH>::zero();
+    fn shr(self, n: usize) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH>::zero();
         for i in 0..WIDTH {
             result.columns[i] = self.columns[i] >> n;
         }
@@ -207,15 +210,15 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> core::ops::Add for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> core::ops::Add for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
     type Output = Self;
 
     /// Add two matrices.
-    fn add(self, b: BCMatrix<T, WIDTH>) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH> {
+    fn add(self, b: BitMatrix<T, WIDTH>) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH> {
             columns: self.columns,
         };
         for i in 0..WIDTH {
@@ -225,16 +228,16 @@ where
     }
 }
 
-impl<'a, 'b, T, const WIDTH: usize> core::ops::Add<&'b BCMatrix<T, WIDTH>>
-    for &'a BCMatrix<T, WIDTH>
+impl<'a, 'b, T, const WIDTH: usize> core::ops::Add<&'b BitMatrix<T, WIDTH>>
+    for &'a BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
-    type Output = BCMatrix<T, WIDTH>;
+    type Output = BitMatrix<T, WIDTH>;
 
     /// Add two matrices (by reference).
-    fn add(self, b: &'b BCMatrix<T, WIDTH>) -> BCMatrix<T, WIDTH> {
-        let mut result = BCMatrix::<T, WIDTH> {
+    fn add(self, b: &'b BitMatrix<T, WIDTH>) -> BitMatrix<T, WIDTH> {
+        let mut result = BitMatrix::<T, WIDTH> {
             columns: self.columns,
         };
         for i in 0..WIDTH {
@@ -244,27 +247,27 @@ where
     }
 }
 
-impl<T, const WIDTH: usize> core::ops::Mul for BCMatrix<T, WIDTH>
+impl<T, const WIDTH: usize> core::ops::Mul for BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
     type Output = Self;
 
     /// Multiply two matrices.
-    fn mul(self, b: BCMatrix<T, WIDTH>) -> BCMatrix<T, WIDTH> {
+    fn mul(self, b: BitMatrix<T, WIDTH>) -> BitMatrix<T, WIDTH> {
         self.dot(&b)
     }
 }
 
-impl<'a, 'b, T, const WIDTH: usize> core::ops::Mul<&'b BCMatrix<T, WIDTH>>
-    for &'a BCMatrix<T, WIDTH>
+impl<'a, 'b, T, const WIDTH: usize> core::ops::Mul<&'b BitMatrix<T, WIDTH>>
+    for &'a BitMatrix<T, WIDTH>
 where
     T: BitMatrixInt,
 {
-    type Output = BCMatrix<T, WIDTH>;
+    type Output = BitMatrix<T, WIDTH>;
 
     /// Multiply two matrices (by reference).
-    fn mul(self, b: &'b BCMatrix<T, WIDTH>) -> BCMatrix<T, WIDTH> {
+    fn mul(self, b: &'b BitMatrix<T, WIDTH>) -> BitMatrix<T, WIDTH> {
         self.dot(b)
     }
 }

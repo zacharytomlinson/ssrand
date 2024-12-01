@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use ssrand::RngJumpAhead;
 use rand_core::RngCore;
+use ssrand::RngJumpAhead;
 //use rand::Rng;
 
 fn test_new_and_next_u32() {
